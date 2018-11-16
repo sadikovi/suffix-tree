@@ -19,7 +19,7 @@ class SuffixTree {
     typedef typename std::vector<CharType> string;
     typedef typename std::iterator_traits<typename string::iterator>::difference_type index_type;
     typedef CharType character;
-    typedef std::tuple<Node*,index_type, index_type> ReferencePoint;
+    typedef std::tuple<Node*, index_type, index_type> ReferencePoint;
 
 
     // NESTED CLASSES DEFINITIONS

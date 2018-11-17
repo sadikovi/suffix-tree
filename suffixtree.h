@@ -139,7 +139,6 @@ class SuffixTree {
     Base tree;
 
     std::unordered_map<int, string> haystack;
-    std::unordered_map<int, Node*> borderpath_map;
     int last_index;
 
     std::string to_string(string const & s, index_type b, index_type e) {
@@ -299,7 +298,7 @@ class SuffixTree {
     // @s[in]: The string to insert in the tree
     // @sindex[in]: The index id of @s
     //
-    // deploy_suffixes performs the Ukkonen's algorithm to inser @s into the
+    // deploy_suffixes performs the Ukkonen's algorithm to insert @s into the
     // tree.
     int deploy_suffixes(const string& s, int sindex) {
         ReferencePoint active_point(&tree.root, sindex, 0);
@@ -309,7 +308,7 @@ class SuffixTree {
         }
         auto s_len = (index_type) s.size(); // ivan: s.size() will never be larger than index_type
         for (; i < s_len; ++i) {
-            MappedSubstring ki(sindex,std::get<2>(active_point), i);
+            MappedSubstring ki(sindex, std::get<2>(active_point), i);
             active_point = update(std::get<0>(active_point), ki);
             ki.l = std::get<2>(active_point);
             active_point = canonize(std::get<0>(active_point), ki);
@@ -407,7 +406,7 @@ public:
     }
 
     void dump_tree() {
-        dump_node(&tree.root, true, 0, MappedSubstring(0,0,-1));
+        dump_node(&tree.root, true, 0, MappedSubstring(0, 0, -1));
     }
 };
 

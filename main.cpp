@@ -26,4 +26,5 @@ int main() {
     stree.dump_tree();
     std::cout << std::boolalpha;
     std::cout << stree.is_suffix(suffix_test.begin(), suffix_test.end()) << std::endl;
+    std::cout << stree.is_substring(suffix_test.begin(), suffix_test.end()) << std::endl;
 }

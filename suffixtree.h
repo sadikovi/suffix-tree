@@ -19,6 +19,7 @@ class SuffixTree {
     typedef typename std::vector<CharType> string;
     typedef typename std::iterator_traits<typename string::iterator>::difference_type index_type;
     typedef CharType character;
+    // (Node, string index in haystack, string start index)
     typedef std::tuple<Node*, index_type, index_type> ReferencePoint;
 
 
@@ -346,31 +347,17 @@ class SuffixTree {
     }
 
     template <typename InputIterator>
-    bool contain_end_token(InputIterator const & str_begin, InputIterator const & str_end) {
-        return (std::find(str_begin, str_end, end_token) != str_end);
-    }
-
-    template <typename InputIterator, bool append_end_token = true>
-    string make_string(InputIterator const & str_begin, InputIterator const & str_end) {
-        if (contain_end_token(str_begin, str_end)) {
+    string make_string(InputIterator const & str_begin, InputIterator const & str_end, bool append_end_token) {
+        if (std::find(str_begin, str_end, end_token) != str_end) {
             throw std::invalid_argument("Input range contains the end token");
         }
-        return make_string(str_begin, str_end, std::integral_constant<bool, append_end_token>());
-    }
-
-    template <typename InputIterator>
-    string make_string(InputIterator const & str_begin, InputIterator const & str_end, std::true_type) {
         string s(str_begin, str_end);
-        s.push_back(end_token);
+        if (append_end_token) {
+            s.push_back(end_token);
+        }
         return s;
     }
 
-    template <typename InputIterator>
-    string make_string(InputIterator const & str_begin, InputIterator const & str_end, std::false_type) {
-        index_type str_len = std::distance(str_begin, str_end);
-        string s(str_begin, str_end);
-        return s;
-    }
 public:
     SuffixTree() : last_index(0) {
     }
@@ -378,7 +365,7 @@ public:
     template <typename InputIterator>
     int add_string(InputIterator const & str_begin, InputIterator const & str_end) {
         ++last_index;
-        auto s = make_string(str_begin, str_end);
+        auto s = make_string(str_begin, str_end, true);
         haystack.emplace(last_index, std::move(s));
         const auto& s_from_map = haystack.find(last_index);
         if (0 > deploy_suffixes(s_from_map->second, last_index)) {
@@ -390,14 +377,14 @@ public:
 
     template <typename InputIterator>
     bool is_suffix(InputIterator const & str_begin, InputIterator const & str_end) {
-        auto s = make_string(str_begin, str_end);
+        auto s = make_string(str_begin, str_end, true);
         ReferencePoint root_point(&tree.root, -1, 0);
         return (get_starting_node(s, &root_point) == std::numeric_limits<index_type>::max());
     }
 
     template <typename InputIterator>
     bool is_substring(InputIterator const & str_begin, InputIterator const & str_end) {
-        auto s = make_string<false>(str_begin, str_end);
+        auto s = make_string(str_begin, str_end, false);
         ReferencePoint root_point(&tree.root, -1, 0);
         return (get_starting_node(s, &root_point) == std::numeric_limits<index_type>::max());
     }

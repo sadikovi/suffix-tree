@@ -11,7 +11,8 @@
 #include <vector>
 #include <algorithm>
 
-template <typename CharType = char, CharType end_token = '$'>
+// Use EOT character as end token, instead of '$'.
+template <typename CharType = char, CharType end_token = '\3'>
 class SuffixTree {
     // Forward declarations of inner classes
     struct Node;
